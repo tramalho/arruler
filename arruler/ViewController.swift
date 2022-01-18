@@ -13,6 +13,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    private var dotNodesList = [SCNNode]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -24,12 +26,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         //show debug options
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-        
-        // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        
-        // Set the scene to the view
-        sceneView.scene = scene
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,6 +76,28 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             safeResult.worldTransform.columns.3.z)
         
         sceneView.scene.rootNode.addChildNode(dotNode)
+        
+        dotNodesList.append(dotNode)
+        
+        if dotNodesList.count > 1 {
+            calculate()
+        }
+    }
+    
+    fileprivate func calculate() {
+        guard let start = dotNodesList.first else { return }
+        guard let end = dotNodesList.last else {return }
+        
+        print(start)
+        print(end)
+        
+        let a = end.position.x - start.position.x
+        let b = end.position.y - start.position.y
+        let c = end.position.z - start.position.z
+        
+        let distance = sqrt(pow(a, 2) + pow(b, 2) + pow(c, 2))
+        
+        print(abs(distance))        
     }
     
 }
